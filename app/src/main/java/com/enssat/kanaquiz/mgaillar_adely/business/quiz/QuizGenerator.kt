@@ -1,4 +1,4 @@
-package com.enssat.kanaquiz.mgaillar_adely.quiz
+package com.enssat.kanaquiz.mgaillar_adely.business.quiz
 
 import com.enssat.kanaquiz.mgaillar_adely.data.Kana
 import com.enssat.kanaquiz.mgaillar_adely.data.Kanji

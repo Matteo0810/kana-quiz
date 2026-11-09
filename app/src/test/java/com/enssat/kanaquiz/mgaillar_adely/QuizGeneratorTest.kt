@@ -2,15 +2,15 @@ package com.enssat.kanaquiz.mgaillar_adely
 
 import com.enssat.kanaquiz.mgaillar_adely.data.KanaRepository
 import com.enssat.kanaquiz.mgaillar_adely.data.Kanji
-import com.enssat.kanaquiz.mgaillar_adely.quiz.CHOICE_COUNT
-import com.enssat.kanaquiz.mgaillar_adely.quiz.CharacterType
-import com.enssat.kanaquiz.mgaillar_adely.quiz.KANJI_GRADES
-import com.enssat.kanaquiz.mgaillar_adely.quiz.QUESTION_COUNT
-import com.enssat.kanaquiz.mgaillar_adely.quiz.QuestionType
-import com.enssat.kanaquiz.mgaillar_adely.quiz.QuizGenerator
-import com.enssat.kanaquiz.mgaillar_adely.quiz.QuizParams
-import com.enssat.kanaquiz.mgaillar_adely.quiz.cleanReading
-import com.enssat.kanaquiz.mgaillar_adely.quiz.toOtherSyllabary
+import com.enssat.kanaquiz.mgaillar_adely.business.quiz.CHOICE_COUNT
+import com.enssat.kanaquiz.mgaillar_adely.business.quiz.CharacterType
+import com.enssat.kanaquiz.mgaillar_adely.business.quiz.KANJI_GRADES
+import com.enssat.kanaquiz.mgaillar_adely.business.quiz.QUESTION_COUNT
+import com.enssat.kanaquiz.mgaillar_adely.business.quiz.QuestionType
+import com.enssat.kanaquiz.mgaillar_adely.business.quiz.QuizGenerator
+import com.enssat.kanaquiz.mgaillar_adely.business.quiz.QuizParams
+import com.enssat.kanaquiz.mgaillar_adely.business.quiz.cleanReading
+import com.enssat.kanaquiz.mgaillar_adely.business.quiz.toOtherSyllabary
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals

@@ -1,4 +1,4 @@
-package com.enssat.kanaquiz.mgaillar_adely.quiz
+package com.enssat.kanaquiz.mgaillar_adely.business.quiz
 
 const val QUESTION_COUNT = 10
 const val CHOICE_COUNT = 4
