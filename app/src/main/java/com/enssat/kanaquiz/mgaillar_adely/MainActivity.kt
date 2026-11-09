@@ -4,11 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.ui.Modifier
-import com.enssat.kanaquiz.mgaillar_adely.ui.learning.LearningScreen
+import com.enssat.kanaquiz.mgaillar_adely.ui.KanaQuizApp
 import com.enssat.kanaquiz.mgaillar_adely.ui.theme.KanaQuizTheme
 
 class MainActivity : ComponentActivity() {
@@ -16,15 +12,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            KanaQuizTheme {
-                Scaffold(
-                    modifier = Modifier.fillMaxSize()
-                ) { innerPadding ->
-                    LearningScreen(
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+            KanaQuizTheme { KanaQuizApp() }
         }
     }
 }

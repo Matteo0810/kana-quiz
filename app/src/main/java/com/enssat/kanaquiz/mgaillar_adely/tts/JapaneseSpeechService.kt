@@ -27,10 +27,10 @@ class JapaneseSpeechService(context: Context) {
     }
 
 
-    fun speak(text: String) {
+    fun speak(text: String, alternateSpeed: Boolean = true) {
         if (!isReady || text.isBlank()) return
 
-        val speechRate = if (isSlow) SLOW_SPEECH_RATE else NORMAL_SPEECH_RATE
+        val speechRate = if (alternateSpeed && isSlow) SLOW_SPEECH_RATE else NORMAL_SPEECH_RATE
 
         tts?.setSpeechRate(speechRate)
 
@@ -41,7 +41,7 @@ class JapaneseSpeechService(context: Context) {
             "kanaquiz_speech"
         )
 
-        isSlow = !isSlow
+        if (alternateSpeed) isSlow = !isSlow
     }
 
     fun stop() {

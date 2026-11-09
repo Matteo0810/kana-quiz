@@ -39,13 +39,13 @@ Le travail se fait dans `../kana-quiz`, package `com.enssat.kanaquiz.mgaillar_ad
 
 `stats/GradeCalculator`, en fonctions pures avec des tests unitaires :
 
-- **Score d'un quiz :** `score / 10`, multiplié par 0,8 si l'aide était activée.
-- **Fenêtre :** les 20 derniers quiz.
+- **Score d'un quiz :** score sur 10, avec ou sans aide.
+- **Fenêtre :** les 20 derniers quiz du type de caractères sélectionné.
 - **Niveau validé :** au moins 3 quiz de ce niveau dans la fenêtre et au moins 80 % de moyenne.
-- **Grade :** le plus haut niveau validé (0 si aucun), plus une partie décimale vers le niveau suivant : `min(n / 3, 1) × min(moyenne / 0,8, 1)`, où `n` et `moyenne` portent sur les quiz de ce niveau suivant.
-- Le niveau suivant de 6 est 8 (le grade 7 n'existe pas), donc la progression s'étale sur 2 points entre eux.
+- **Grade :** le plus haut niveau validé (0 si aucun), sans partie décimale.
+- Le niveau suivant de 6 est 8 (le grade 7 n'existe pas).
 - `gradeHistory(results)` rejoue l'historique et donne un point par quiz.
-- La justification de ce choix (fenêtre glissante, pas de pénalité pour les révisions faciles, décimale motivante) sera écrite dans un commentaire et un court paragraphe de rendu.
+- La règle et un exemple sont documentés dans le README.
 
 ## Étape 4 : page de progression
 
