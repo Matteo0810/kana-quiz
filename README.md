@@ -1,31 +1,65 @@
 # KanaQuiz
 
-Application Android pour apprendre les hiragana, les katakana et les kanji, puis tester ses connaissances avec des quiz de 10 questions.
+Application Android pour apprendre les hiragana, les katakana et les kanji.
+
+Projet réalisé à l'ENSSAT par Matteo Gaillard et Alan Dely.
+
+## Fonctionnalités
+
+- Fiches des caractères avec lecture à voix haute
+- Quiz de 10 questions à 4 choix, avec aide et voix en option
+- Grade calculé à partir des derniers résultats
+- Courbe de progression
+
+## Technique
+
+Kotlin, Jetpack Compose, Room, Android TextToSpeech. Android 7.0 minimum.
+
+```
+app/src/main/java/.../mgaillar_adely/
+├── business/   génération des quiz, calcul du grade
+├── data/       lecture des JSON, base Room
+├── tts/        synthèse vocale
+└── ui/         écrans Compose
+```
 
 ## Calcul du grade
 
-Le grade est calculé séparément pour les hiragana, les katakana et les kanji :
+Le grade est calculé séparément pour les hiragana, les katakana et les kanji, sur les 20 derniers quiz du type concerné.
 
-1. On prend les **20 derniers quiz terminés** du type de caractères choisi, tous types de questions confondus.
-2. Pour chaque niveau, on calcule la moyenne des scores des quiz de ce niveau : `moyenne = somme des scores / nombre de quiz`.
-3. Un niveau est validé s’il comporte **au moins 3 quiz** et une **moyenne supérieure ou égale à 8/10**.
-4. Le grade affiché est le **plus haut niveau validé**, ou **0** si aucun niveau n’est validé.
+Un niveau est validé avec au moins 3 quiz de ce niveau et une moyenne d'au moins 8/10. Un quiz fait avec l'aide compte pour 80 % de son score.
 
-Les quiz avec ou sans aide comptent de la même façon. Il n’y a pas de partie décimale dans le calcul, même si l’interface affiche deux décimales.
+La partie entière du grade est le plus haut niveau validé. La partie décimale indique l'avancement vers le niveau suivant :
 
-**Exemple :** trois quiz de kanji de niveau 2 avec les scores 7/10, 8/10 et 9/10 donnent une moyenne de `(7 + 8 + 9) / 3 = 8/10`. Le niveau 2 est donc validé : le grade vaut 2 si aucun niveau supérieur n’est validé. Avec seulement deux quiz, ce niveau ne serait pas encore validé.
+```
+fraction = min(n / 3, 1) × min(moyenne / 8, 1)
+grade    = validé + fraction × (suivant − validé)
+```
 
-Il n’est pas nécessaire de valider les niveaux inférieurs avant un niveau supérieur. Les kana ont uniquement le niveau 1 ; les niveaux de kanji sont 1, 2, 3, 4, 5, 6 et 8 (pas de niveau 7 dans les données). Après le niveau 6, le prochain niveau est donc 8.
+`n` et `moyenne` portent sur les quiz du niveau suivant.
 
-Le grade peut baisser si la moyenne baisse ou si d’anciens quiz sortent des 20 derniers résultats. Le graphique recalcule le grade après chaque quiz ; le meilleur grade correspond au maximum atteint dans cet historique.
+Exemple : le niveau 1 est validé et deux quiz de niveau 2 ont une moyenne de 8/10. La fraction vaut 2/3, le grade 1,67.
 
-## Compilation et tests
+Seuls les derniers résultats comptent, pour que le grade reflète le niveau actuel. Réviser un niveau facile ne le fait pas baisser, car chaque niveau a sa propre moyenne.
 
-Avec le JDK d’Android Studio :
+## Lancer le projet
+
+Ouvrir le dossier dans Android Studio, ou utiliser le JDK d'Android Studio en ligne de commande :
 
 ```sh
 export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
-./gradlew :app:testDebugUnitTest :app:assembleDebug
+./gradlew :app:assembleDebug
 ```
 
-Voir [TP2_IMPLEMENTATION.md](TP2_IMPLEMENTATION.md) pour les détails du parcours, du stockage et des tests instrumentés.
+## Tests
+
+```sh
+./gradlew :app:testDebugUnitTest
+./gradlew :app:connectedDebugAndroidTest
+```
+
+`SeedFakeResultsTest` ajoute des résultats factices en base et `CleanFakeResultsTest` les retire. Le détail est dans [TP2_IMPLEMENTATION.md](TP2_IMPLEMENTATION.md).
+
+## Données
+
+Les kanji et leurs informations viennent de [kanji-data](https://github.com/davidluzgouveia/kanji-data).

@@ -1,9 +1,13 @@
 package com.enssat.kanaquiz.mgaillar_adely.data
 
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
 import com.enssat.kanaquiz.mgaillar_adely.business.quiz.*
 
+@Entity(tableName = "quiz_results", indices = [Index("timestamp", "id")])
 data class QuizResult(
-    val id: String,
+    @PrimaryKey val id: String,
     val timestamp: Long,
     val characterType: CharacterType,
     val questionType: QuestionType,

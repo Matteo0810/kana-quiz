@@ -3,7 +3,6 @@ package com.enssat.kanaquiz.mgaillar_adely.business.quiz
 const val QUESTION_COUNT = 10
 const val CHOICE_COUNT = 4
 
-// Le grade 7 n'existe pas dans kanji_jouyou.json.
 val KANJI_GRADES = listOf(1, 2, 3, 4, 5, 6, 8)
 
 enum class CharacterType { HIRAGANA, KATAKANA, KANJI }
@@ -27,7 +26,6 @@ data class QuizParams(
     val helpEnabled: Boolean = false,
     val ttsEnabled: Boolean = false,
 ) {
-    // Les quiz de kana sont toujours de grade 1.
     val grade: Int
         get() = if (characterType == CharacterType.KANJI) requestedGrade else 1
 }
@@ -37,7 +35,6 @@ data class QuizQuestion(
     val choices: List<String>,
     val correctIndex: Int,
     val help: String? = null,
-    // Texte vocalisable sans révéler la réponse ; null si la voix la donnerait.
     val speechBeforeAnswer: String? = null,
     val speechAfterAnswer: String? = null,
 )

@@ -27,16 +27,27 @@ class GradeCalculatorTest {
     }
 
     @Test fun belowThresholdDoesNotValidateALevel() {
-        assertEquals(0.0, grade(listOf(result(1, score = 4))).grade, 0.0001)
-        assertEquals(0.0, grade((1..3).map { result(it, score = 7) }).grade, 0.0001)
+        assertEquals(0, grade(listOf(result(1, score = 4))).validatedGrade)
+        assertEquals(1.0 / 6, grade(listOf(result(1, score = 4))).grade, 0.0001)
+        assertEquals(0, grade((1..3).map { result(it, score = 7) }).validatedGrade)
+        assertEquals(7.0 / 8, grade((1..3).map { result(it, score = 7) }).grade, 0.0001)
+    }
+
+    @Test fun decimalPartGrowsWithEachQuizTowardsNextLevel() {
+        assertEquals(1.0 / 3, grade(listOf(result(1))).grade, 0.0001)
+        assertEquals(2.0 / 3, grade((1..2).map { result(it) }).grade, 0.0001)
+        val validatedThenNext = (1..3).map { result(it) } + result(4, grade = 2, score = 8)
+        assertEquals(1 + 1.0 / 3, grade(validatedThenNext).grade, 0.0001)
     }
 
     @Test fun validationUsesTheAverageRatherThanIndividualScores() {
         assertEquals(1, grade(listOf(result(1, score = 6), result(2, score = 8), result(3, score = 10))).validatedGrade)
     }
 
-    @Test fun helpDoesNotChangeTheGrade() {
-        assertEquals(1, grade((1..3).map { result(it, score = 8, help = true) }).validatedGrade)
+    @Test fun helpWeighsScoreAtEightyPercent() {
+        val withHelp = grade((1..3).map { result(it, score = 8, help = true) })
+        assertEquals(0, withHelp.validatedGrade)
+        assertEquals(0.8, withHelp.grade, 0.0001)
         assertEquals(1, grade((1..3).map { result(it, score = 10, help = true) }).validatedGrade)
     }
 
@@ -56,7 +67,7 @@ class GradeCalculatorTest {
 
     @Test fun nextLevelAfterSixIsEight() {
         val history = (1..3).map { result(it, grade = 6) } + result(4, grade = 8)
-        assertEquals(6.0, grade(history).grade, 0.0001)
+        assertEquals(6 + 2.0 / 3, grade(history).grade, 0.0001)
         assertEquals(8, grade(history).nextGrade)
     }
 
@@ -70,7 +81,7 @@ class GradeCalculatorTest {
         val results = (1..3).map { result(it) }
         val history = GradeCalculator.history(results.reversed(), CharacterType.KANJI)
         assertEquals(listOf("1", "2", "3"), history.map { it.resultId })
-        assertEquals(0.0, history.first().grade, 0.0001)
+        assertEquals(1.0 / 3, history.first().grade, 0.0001)
         assertEquals(1.0, history.last().grade, 0.0001)
     }
 

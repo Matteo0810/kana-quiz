@@ -38,7 +38,7 @@ fun ProgressScreen(results: List<QuizResult>, initialType: CharacterType = Chara
             ProgressChart(history, if (type == CharacterType.KANJI) 8 else 1)
         }
         Text("Comment ça marche ?", style = MaterialTheme.typography.titleMedium)
-        Text("Les 20 derniers quiz de ce type comptent. Un niveau est validé avec au moins 3 quiz à ce niveau et 80 % de moyenne. Les quiz avec ou sans aide comptent de la même façon. Le grade est le plus haut niveau validé. Le grade peut baisser lorsque d’anciens quiz sortent de la fenêtre.", style = MaterialTheme.typography.bodySmall)
+        Text("Les 20 derniers quiz de ce type comptent. Un niveau est validé avec au moins 3 quiz à ce niveau et 80 % de moyenne. Un quiz avec aide compte pour 80 % de son score. Le grade est le plus haut niveau validé, et ses décimales montrent ton avancement vers le niveau suivant. Le grade peut baisser lorsque d’anciens quiz sortent de la fenêtre.", style = MaterialTheme.typography.bodySmall)
         if (recent.isNotEmpty()) {
             Text("Derniers quiz", style = MaterialTheme.typography.titleLarge)
             recent.forEach { result ->

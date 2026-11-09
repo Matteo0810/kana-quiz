@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.enssat.kanaquiz.mgaillar_adely.data.db.QuizDatabase
 import com.enssat.kanaquiz.mgaillar_adely.ui.quiz.Page
 import com.enssat.kanaquiz.mgaillar_adely.ui.quiz.QuizViewModel
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Rule
@@ -18,12 +19,10 @@ class QuizFlowTest {
     private fun model() = ViewModelProvider(compose.activity)[QuizViewModel::class.java]
 
     @After fun cleanup() {
-        sessionId?.let { id ->
-            QuizDatabase(compose.activity).use {
-                it.writableDatabase.delete("quiz_results", "id = ?", arrayOf(id))
-            }
-        }
+        sessionId?.let { id -> runBlocking { dao().deleteById(id) } }
     }
+
+    private fun dao() = QuizDatabase.getInstance(compose.activity).quizResultDao()
 
     private fun startQuiz() {
         compose.onNodeWithText("Lancer un quiz").performScrollTo().performClick()
@@ -46,11 +45,9 @@ class QuizFlowTest {
         }
         compose.waitUntil(10_000) { model().state.value.page == Page.RESULT }
         compose.onNodeWithText("Résultat enregistré").assertIsDisplayed()
-        QuizDatabase(compose.activity).use { database ->
-            val saved = database.readAll().filter { it.id == sessionId }
-            assertEquals(1, saved.size)
-            assertEquals(model().state.value.session!!.score, saved.single().score)
-        }
+        val saved = runBlocking { dao().getAll() }.filter { it.id == sessionId }
+        assertEquals(1, saved.size)
+        assertEquals(model().state.value.session!!.score, saved.single().score)
         compose.onNodeWithText("Voir ma progression").performScrollTo().performClick()
         compose.onNodeWithTag("progress-chart").performScrollTo().assertIsDisplayed()
     }
@@ -61,8 +58,6 @@ class QuizFlowTest {
         compose.onNodeWithContentDescription("Retour").performClick()
         compose.onNodeWithText("Quitter le quiz").performClick()
         compose.onNodeWithText("Lancer un quiz").assertExists()
-        QuizDatabase(compose.activity).use { database ->
-            assertFalse(database.readAll().any { it.id == sessionId })
-        }
+        assertFalse(runBlocking { dao().getAll() }.any { it.id == sessionId })
     }
 }
