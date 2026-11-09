@@ -22,8 +22,8 @@ fun LearningScreen(
     modifier: Modifier = Modifier,
     learningViewModel: LearningViewModel = viewModel()
 ) {
-
-    val uiState by learningViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by learningViewModel.uiState
+        .collectAsStateWithLifecycle()
 
     val context = LocalContext.current
 
@@ -50,28 +50,71 @@ fun LearningScreen(
             style = MaterialTheme.typography.headlineMedium
         )
 
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            CharacterType.entries.forEach { type ->
+
+                val label = when (type) {
+                    CharacterType.HIRAGANA -> "Hiragana"
+                    CharacterType.KATAKANA -> "Katakana"
+                    CharacterType.KANJI -> "Kanji"
+                }
+
+                FilterChip(
+                    selected = uiState.selectedType == type,
+                    onClick = {
+                        learningViewModel.selectCategory(type)
+                    },
+                    label = {
+                        Text(label)
+                    },
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+
         Text(
-            text = if (uiState.characters.isEmpty()) {
-                "1 / 0"
+            text = if (uiState.totalCharacters == 0) {
+                "0 / 0"
             } else {
-                "${uiState.currentIndex + 1} / ${uiState.characters.size}"
+                "${uiState.currentIndex + 1} / ${uiState.totalCharacters}"
             },
             style = MaterialTheme.typography.bodyMedium
         )
 
         Spacer(modifier = Modifier.weight(1f))
 
-        // Carte du caractère courant
-        uiState.currentCharacter?.let { current ->
-            CharacterCard(
-                character = current.character,
-                pronunciation = current.pronunciation,
-                category = current.category,
-                description = current.description,
-                onSpeakClick = {
-                    speechService.speak(current.character)
-                }
-            )
+        when {
+            uiState.isLoading -> {
+                CircularProgressIndicator()
+            }
+
+            uiState.error != null -> {
+                Text(
+                    text = uiState.error ?: "Erreur",
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+
+            uiState.currentCharacter != null -> {
+                val current = uiState.currentCharacter!!
+
+                CharacterCard(
+                    character = current.character,
+                    pronunciation = current.pronunciation,
+                    category = current.category,
+                    description = current.description,
+                    onSpeakClick = {
+                        speechService.speak(current.character)
+                    }
+                )
+            }
+
+            else -> {
+                Text("Aucun caractère disponible")
+            }
         }
 
         Spacer(modifier = Modifier.weight(1f))
@@ -85,14 +128,14 @@ fun LearningScreen(
                 onClick = {
                     learningViewModel.previousCharacter()
                 },
-                enabled = uiState.hasPrevious,
+                enabled = uiState.hasPrevious && !uiState.isLoading,
                 modifier = Modifier.weight(1f)
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Précédent"
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(Modifier.width(8.dp))
                 Text("Précédent")
             }
 
@@ -100,11 +143,11 @@ fun LearningScreen(
                 onClick = {
                     learningViewModel.nextCharacter()
                 },
-                enabled = uiState.hasNext,
+                enabled = uiState.hasNext && !uiState.isLoading,
                 modifier = Modifier.weight(1f)
             ) {
                 Text("Suivant")
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(Modifier.width(8.dp))
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                     contentDescription = "Suivant"
